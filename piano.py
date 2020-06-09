@@ -131,8 +131,7 @@ class Keyboard :
     def play_note(self,key,view) :
         print(key)
         
-        print(self.octave)
-        print(view.chord.get())
+        
         if (view.chord.get() == 0) :
             
             filename= key+str(self.octave)+'.wav'

@@ -45,6 +45,7 @@ class View :
         print("View : update()")
         self.a=amplitude
         self.f=frequency
+        print("Amp=",self.a,"Freq=",self.f)
         self.canvas.delete("all")
         self.grid()
         #self.canvas.create_line(0, self.center, self.width, self.center, fill='black')

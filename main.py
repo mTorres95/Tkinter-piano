@@ -26,11 +26,13 @@ mw.title("Leçon de Piano")
 frame=tk.Frame(mw,borderwidth=5,width=360,height=300)
 octaves=4
 piano=Piano(frame,octaves)
-waveGenerator=WaveGenerator(frame)
-waveGenerator.packing()
+
 view=View(frame)
 view.grid(4)
+
+waveGenerator=WaveGenerator(frame,view)
+waveGenerator.packing()
 view.packing()
-view.update()
+#view.update(waveGenerator)
 frame.pack()    
 mw.mainloop()
