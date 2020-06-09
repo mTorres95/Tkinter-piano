@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 # https://stackoverflow.com/questions/34522095/gui-button-hold-down-tkinter
 
+from playsound import playsound
 import sys
+
 major=sys.version_info.major
 minor=sys.version_info.minor
 if major==2 and minor==7 :
@@ -27,12 +29,13 @@ class Piano :
         self.octaves=[]
         frame=tk.Frame(self.parent,bg="yellow")
         for octave in range(octaves) :
+            self.octave=octave
             self.create_octave(frame,octave+2)
         frame.pack(fill="x")
 
     def create_octave(self,parent,degree=3) :
         model=Octave(degree)
-        control=Keyboard(parent,model)
+        control=Keyboard(parent,model,self.octave)
         view=Screen(parent)
         model.attach(view)
         control.get_keyboard().grid(column=degree,row=0)
@@ -83,9 +86,10 @@ class Screen(Observer):
     
 
 class Keyboard :
-    def __init__(self,parent,model) :
+    def __init__(self,parent,model,octave) :
         self.parent=parent
         self.model=model
+        self.octave=octave+4
         self.create_keyboard()
     def create_keyboard(self) :
         key_w,key_h=40,150
@@ -109,7 +113,11 @@ class Keyboard :
                 dx_white=dx_white+1
     
     def play_note(self,key) :
-        self.model.notify(key)
+        print(key)
+        print(self.octave)
+        filename= key+str(self.octave)+'.wav'
+        playsound(filename)
+        #self.model.notify(key)
     def get_keyboard(self) :
         return self.keyboard
     def get_degrees(self) :
