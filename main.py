@@ -7,11 +7,13 @@ if major==2 and minor==7 :
 elif major==3 and minor==6 :
     import tkinter as tk
     from tkinter import filedialog
+    from tkinter import messagebox
 else :
     print("Your python version is : ",major,minor)
     print("... I guess it will work !")
     import tkinter as tk
     from tkinter import filedialog 
+    from tkinter import messagebox
 from math import pi,sin
 import collections
 import subprocess
@@ -21,18 +23,53 @@ from signal_visualizer import *
 from wave_generator import *
 
 mw = tk.Tk()
-mw.geometry("360x300")
+mw.geometry("600x300")
+#mw.attributes("-fullscreen", True)
 mw.title("Leçon de Piano")
 frame=tk.Frame(mw,borderwidth=5,width=360,height=300)
 octaves=4
 piano=Piano(frame,octaves)
-waveGenerator=WaveGenerator(frame)
-waveGenerator.packing()
+
 view=View(frame)
 view.grid(4)
+
+waveGenerator=WaveGenerator(frame,view)
+waveGenerator.packing()
+
 view.packing()
-amplitude = 80
-frequency = 0.04
-view.update(amplitude, frequency)
-frame.pack()    
+#view.update(waveGenerator)
+frame.pack()
+
+
+# create Menu
+menubar = tk.Menu(mw)
+
+# file dropdown menu
+filemenu = tk.Menu(menubar, tearoff=0)
+def onOpen():
+    print(filedialog.askopenfilename(initialdir = "/",title = "Open file",filetypes = (("Python files","*.py;*.pyw"),("All files","*.*"))))
+
+filemenu.add_command(label="Open", command=onOpen)
+# filemenu.add_command(label="Save", command=hello)
+# filemenu.add_separator()
+def exit_application():
+    answer = messagebox.askquestion ('Exit Application','Are you sure you want to exit the application',icon = 'warning')
+    if answer == 'yes':
+       mw.destroy()
+    else:
+        tk.messagebox.showinfo('Return','You will now return to the application screen')
+filemenu.add_command(label="Exit", command=exit_application)
+menubar.add_cascade(label="File", menu=filemenu)
+
+# help dropdown menu
+helpmenu = tk.Menu(menubar, tearoff=0)
+def help_application():
+    messagebox.showinfo("Information","Informative message")
+helpmenu.add_command(label="About", command=help_application)
+menubar.add_cascade(label="Help", menu=helpmenu)
+
+
+# display the menu
+mw.config(menu=menubar)
+
 mw.mainloop()

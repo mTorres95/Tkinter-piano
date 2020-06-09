@@ -21,7 +21,10 @@ else :
     from tkinter import filedialog 
 
 class WaveGenerator :
-    def __init__(self,parent):
+
+
+    def __init__(self,parent,view):
+        self.view = view
         # dictionary for notes and its frequencies
         self.frequencies = { 'C' : 261.63,
                         'C#': 277.18,
@@ -38,7 +41,9 @@ class WaveGenerator :
         # string for scales (repeated so it doesn't get out of ranges)
         self.chromatic = "C, C#, D, D#, E, F, F#, G, G#, A, A#, B, C, C#, D, D#, E, F, F#, G, G#, A, A#, B"
         self.chromaticArray = self.chromatic.split(", ")
-        
+        self.create_widgets(parent)
+
+    def create_widgets(self,parent):
         self.canvas=tk.Canvas(parent,width=600,height=300)
         #self.canvas.bind("<Configure>")  #The widget changed size. The new size is provided in the width and height attributes of the event object passed to the callback.
 
@@ -47,16 +52,19 @@ class WaveGenerator :
         self.noteLabel = tk.Label(self.canvas, text="Note")
         #self.noteLabel.pack()
         self.noteLabel.grid(row=0, column=1, sticky="nsew")
-        self.spinNote = tk.Spinbox(self.canvas, values=('C','C#','D','D#','E','F','F#','G','G#','A','A#','B'), wrap=True)
+        self.spinNote = tk.Spinbox(self.canvas, values=('C','C#','D','D#','E','F','F#','G','G#','A','A#','B'), wrap=True, command = self.update_signal)
         #self.spinNote.pack()
         self.spinNote.grid(row=0, column=2, sticky="nsew")
+        
+
 
         self.octaveLabel = tk.Label(self.canvas, text="Octave")
         #self.octaveLabel.pack()
         self.octaveLabel.grid(row=1, column=1, sticky="nsew")
-        self.spinOctave = tk.Spinbox(self.canvas, values=(4,5,6,7))
+        self.spinOctave = tk.Spinbox(self.canvas, values=(4,5,6,7), command = self.update_signal)
         #self.spinOctave.pack()
         self.spinOctave.grid(row=1, column=2, sticky="nsew")
+        
 
         # duration
         self.durationLabel = tk.Label(self.canvas, text="Duration")
@@ -67,7 +75,7 @@ class WaveGenerator :
         
         self.volumeLabel = tk.Label(self.canvas, text="Volume")
         self.volumeLabel.grid(row=2, column=0)
-        self.volumeSlider = tk.Scale(self.canvas, from_=0.2, to=1,orient="horizontal",resolution=0.2)
+        self.volumeSlider = tk.Scale(self.canvas, from_=0.2, to=1,orient="horizontal",resolution=0.2, command = self.update_signal_slider)
         self.volumeSlider.grid(row=3, column=0)
         #self.durationSlider.pack()
 
@@ -97,9 +105,7 @@ class WaveGenerator :
         self.buttonMode.grid(row=1, column=3, sticky="nsew")
         self.buttonMode.bind("<Button-1>", self.handle_click_mode) 
 
-   def change(self):
-       print("call get screen")
-       return self.screen
+
     
     def packing(self) :
         self.canvas.pack(expand=1,fill="both",padx=6)
@@ -216,6 +222,16 @@ class WaveGenerator :
         sound.close()
         print(fileName, 'created.')
 
+
+    def update_signal(self):
+        
+        self.view.update(self.volumeSlider.get(),float(self.frequencies[self.spinNote.get()])*(int(self.spinOctave.get())-3))
+        print(self.spinNote.get())
+
+    def update_signal_slider(self,event):
+        
+        self.view.update(self.volumeSlider.get(),float(self.frequencies[self.spinNote.get()])*(int(self.spinOctave.get())-3))
+        print(self.spinNote.get())
 
 if __name__ == "__main__" :
     mw = tk.Tk()    #create window object
