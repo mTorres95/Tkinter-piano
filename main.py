@@ -32,6 +32,7 @@ view.grid(4)
 
 waveGenerator=WaveGenerator(frame,view)
 waveGenerator.packing()
+
 view.packing()
 #view.update(waveGenerator)
 frame.pack()    

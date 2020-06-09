@@ -48,19 +48,19 @@ class WaveGenerator :
         self.noteLabel = tk.Label(self.canvas, text="Note")
         #self.noteLabel.pack()
         self.noteLabel.grid(row=0, column=1, sticky="nsew")
-        self.spinNote = tk.Spinbox(self.canvas, values=('C','C#','D','D#','E','F','F#','G','G#','A','A#','B'), wrap=True)
+        self.spinNote = tk.Spinbox(self.canvas, values=('C','C#','D','D#','E','F','F#','G','G#','A','A#','B'), wrap=True, command = self.update_signal)
         #self.spinNote.pack()
         self.spinNote.grid(row=0, column=2, sticky="nsew")
-        self.spinNote.bind("<Button-1>",self.update_signal)
+        
 
 
         self.octaveLabel = tk.Label(self.canvas, text="Octave")
         #self.octaveLabel.pack()
         self.octaveLabel.grid(row=1, column=1, sticky="nsew")
-        self.spinOctave = tk.Spinbox(self.canvas, values=(4,5,6,7))
+        self.spinOctave = tk.Spinbox(self.canvas, values=(4,5,6,7), command = self.update_signal)
         #self.spinOctave.pack()
         self.spinOctave.grid(row=1, column=2, sticky="nsew")
-        self.spinOctave.bind("<Button-1>",self.update_signal)
+        
 
         # duration
         self.durationLabel = tk.Label(self.canvas, text="Duration")
@@ -71,9 +71,8 @@ class WaveGenerator :
         
         self.volumeLabel = tk.Label(self.canvas, text="Volume")
         self.volumeLabel.grid(row=2, column=0)
-        self.volumeSlider = tk.Scale(self.canvas, from_=0.2, to=1,orient="horizontal",resolution=0.2)
+        self.volumeSlider = tk.Scale(self.canvas, from_=0.2, to=1,orient="horizontal",resolution=0.2, command = self.update_signal_slider)
         self.volumeSlider.grid(row=3, column=0)
-        self.volumeSlider.bind("<ButtonRelease-1>",self.update_signal)
         #self.durationSlider.pack()
 
         # single note
@@ -226,7 +225,12 @@ class WaveGenerator :
         print(fileName, 'created.')
 
 
-    def update_signal(self,event):
+    def update_signal(self):
+        
+        self.view.update(self.volumeSlider.get(),float(self.frequencies[self.spinNote.get()])*(int(self.spinOctave.get())-3))
+        print(self.spinNote.get())
+
+    def update_signal_slider(self,event):
         
         self.view.update(self.volumeSlider.get(),float(self.frequencies[self.spinNote.get()])*(int(self.spinOctave.get())-3))
         print(self.spinNote.get())

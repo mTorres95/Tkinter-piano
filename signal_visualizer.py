@@ -43,8 +43,8 @@ class View :
         return self.signal
     def update(self,amplitude,frequency):
         print("View : update()")
-        self.a=amplitude
-        self.f=frequency
+        self.a=amplitude*127.5
+        self.f=frequency/5000
         print("Amp=",self.a,"Freq=",self.f)
         self.canvas.delete("all")
         self.grid()
