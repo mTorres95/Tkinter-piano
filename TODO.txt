@@ -1,0 +1,56 @@
+Objectifs de l'application
+==========================
+
+Developper une application interactive pour :
+  - creer des sons
+  - les visualiser sous forme d'onde
+  - jouer les sons (notes) sur un clavier de piano sur 1 puis 2 octaves puis 3 ...
+  - apprendre a reconnaitre les notes au piano (afficher le nom des notes,visualiser la touche correspondante)
+  - creer des accords majeurs (tonalite-tierce-quinte) a partir des notes  (exemple accord Do majeurs : C-E-G)
+  - jouer les accords sur un clavier de piano sur 1 puis 2 octaves puis 3 ...
+  - apprendre a reconnaitre les accords au piano (afficher le nom et les notes des accords,visualiser les touches correspondantes ...) 
+
+Pour aller plus loin :
+  - apprendre a jouer des renversements d'accords !
+
+Etapes à suivre 
+===============
+
+1) wave_generator.py : Proposer et implementer une IHM pour creer des sons (notes pures puis harmoniques) au format wav.
+
+2) signal_visualizer.py : Proposer et implementer une IHM pour visualiser un son pur puis un son (une note) avec ses harmoniques.
+
+3) piano.py : Proposer et implementer une IHM pour jouer des notes sur un clavier de piano a 1 puis 2 puis 3... octaves
+
+4) main.py : integration des trois versions dans une seule IHM des versions precedentes
+
+5) Enrichir l'IHM du piano pour :
+     - apprendre a reconnaitre les notes sur le clavier
+     - visualiser et jouer des accords au piano
+     - visualiser et jouer les accords et leur renversement
+
+Aide pour format wav
+====================
+Audio
+-----
+  - frequencies.py, frequencies.db : correspondance frequence-note de gamme musicale stockee dans une table de BD
+  - wav_audio.py :  creer des fichiers au format wav pour une frequence (note) donnee (cf : Fabrice Sincere ; Jean-Claude Meilland, ...)
+  - wav_create_chords-0.py  :  creation d'un accord  (3 notes) au format wav 
+  - wav_create_note-0.py : creation d'un son (note) au format wav
+  - wav_read_note-0.py : lecture  d'un son (note) au format wav
+  - wav_create_notes_from_frequencies_db.py : creation des notes a partir de la BD des frequences 
+  - frequencies.py : stocker dans une BD la frequence des notes de gammes musicales
+
+Annexes
+=======
+
+Liens utiles pour mettre en place cette application interactive :
+
+ - http://fsincere.free.fr/isn/python/cours_python_ch9.php
+ - http://freesoundeditor.com/docwave.htm
+ - http://blog.acipo.com/wave-generation-in-python
+ - https://www.tutorialspoint.com/read-and-write-wav-files-using-python-wave
+ - https://www.programcreek.com/python/example/82393/wave.open
+ - https://f5zv.pagesperso-orange.fr/RADIO/RM/RM23/RM23B/RM23B04.htm
+ - http://tpecan.free.fr/index.php?page=echantillonnage
+ 
