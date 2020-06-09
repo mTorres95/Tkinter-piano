@@ -35,8 +35,8 @@ class Piano :
 
     def create_octave(self,parent,degree=3) :
         model=Octave(degree)
-        control=Keyboard(parent,model,self.octave)
         view=Screen(parent)
+        control=Keyboard(parent,model,self.octave,view)
         model.attach(view)
         control.get_keyboard().grid(column=degree,row=0)
         view.get_screen().grid(column=degree,row=1)
@@ -67,15 +67,28 @@ class Octave(Subject) :
         return self.gamme
 
 class Screen(Observer):
+   
     def __init__(self,parent) :
         self.parent=parent
         self.create_screen()
+        
     def create_screen(self) :
+        self.chord = tk.IntVar()
         self.screen=tk.Frame(self.parent,borderwidth=5,width=500,height=160,bg="pink")
-        self.info=tk.Label(self.screen,text="Appuyez sur une touche clavier ",bg="pink",font=('Arial',10))
-        self.info.pack()
+       # self.info=tk.Label(self.screen,text="Appuyez sur une touche clavier ",bg="pink",font=('Arial',10))
+        self.spinMode = tk.Spinbox(self.screen, values=('Major', 'Minor'), wrap=True)
+        #self.spinMode.pack()
+        
+        self.c = tk.Checkbutton(
+            self.screen, text="Play Chord",
+            variable=self.chord)
+        #self.info.pack()
+        self.c.pack()
+        self.spinMode.pack()
     def get_screen(self) :
         return self.screen
+    def get_chord(self) :
+        return self.chord
     def update(self,model,key="C") :
         if __debug__:
             if key not in model.gamme.keys() :
@@ -86,11 +99,14 @@ class Screen(Observer):
     
 
 class Keyboard :
-    def __init__(self,parent,model,octave) :
+    def __init__(self,parent,model,octave,view) :
         self.parent=parent
         self.model=model
         self.octave=octave+4
         self.create_keyboard()
+        self.view=view
+        
+        
     def create_keyboard(self) :
         key_w,key_h=40,150
         dx_white,dx_black=0,0
@@ -108,19 +124,25 @@ class Keyboard :
                     dx_black=dx_black+1
             else :
                 button=tk.Button(self.keyboard,name=key.lower(),bg = "white")
-                button.bind("<Button-1>",lambda event,x=key : self.play_note(x))
+                button.bind("<Button-1>",lambda event,x=key : self.play_note(x,view=self.view))
                 button.place(width=key_w,height=key_h,x=key_w*dx_white,y=0)
                 dx_white=dx_white+1
     
-    def play_note(self,key) :
+    def play_note(self,key,view) :
         print(key)
+        
         print(self.octave)
-        filename= key+str(self.octave)+'.wav'
-        algo=playsound(filename)
-        if(algo):
-            print("algo exists")
+        print(view.chord.get())
+        if (view.chord.get() == 0) :
+            
+            filename= key+str(self.octave)+'.wav'
         else:
-            print("algo doesn't exist")
+            if (view.spinMode.get() == 'Major') :
+                filename= key+str(self.octave)+'_major'+'.wav'
+            else:
+                filename= key+str(self.octave)+'_minor'+'.wav'
+        print(filename)
+        playsound(filename,False)
         #self.model.notify(key)
     def get_keyboard(self) :
         return self.keyboard

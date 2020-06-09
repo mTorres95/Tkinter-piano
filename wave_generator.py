@@ -42,7 +42,7 @@ class WaveGenerator :
         self.canvas=tk.Canvas(parent,width=600,height=300)
         #self.canvas.bind("<Configure>")  #The widget changed size. The new size is provided in the width and height attributes of the event object passed to the callback.
 
-       
+        #self.screen=tk.Frame(parent,borderwidth=5,width=500,height=160,bg="pink")
         # note and octave
         self.noteLabel = tk.Label(self.canvas, text="Note")
         #self.noteLabel.pack()
@@ -64,32 +64,37 @@ class WaveGenerator :
         #self.durationLabel.pack()
         self.durationSlider = tk.Scale(self.canvas, from_=0.5, to=4,orient="horizontal",resolution=0.1)
         self.durationSlider.grid(row=3, column=2)
+        
+        self.volumeLabel = tk.Label(self.canvas, text="Volume")
+        self.volumeLabel.grid(row=2, column=0)
+        self.volumeSlider = tk.Scale(self.canvas, from_=0.2, to=1,orient="horizontal",resolution=0.2)
+        self.volumeSlider.grid(row=3, column=0)
         #self.durationSlider.pack()
 
         # single note
         self.singleNoteLabel = tk.Label(self.canvas, text="Generate single note")
         #self.singleNoteLabel.pack()
-        self.singleNoteLabel.grid(row=3, column=0, sticky="nsew")
+        self.singleNoteLabel.grid(row=0, column=0, sticky="nsew")
         self.buttonNote = tk.Button(self.canvas, text="Generate note .wav")
         #self.buttonNote.pack()
-        self.buttonNote.grid(row=4, column=0, sticky="nsew")
+        self.buttonNote.grid(row=1, column=0, sticky="nsew")
         self.buttonNote.bind("<Button-1>", self.handle_click_note)
 
         # chord (major or minor)
         self.chordLabel = tk.Label(self.canvas, text="Generate Chord")
-        self.chordLabel.grid(row=3, column=3, sticky="nsew")
+        self.chordLabel.grid(row=0, column=3, sticky="nsew")
         #self.chordLabel.pack()
 
         self.modeLabel = tk.Label(self.canvas, text="Major/Minor")
         #self.modeLabel.pack()
-        self.modeLabel.grid(row=4, column=3, sticky="nsew")
+        self.modeLabel.grid(row=2, column=3, sticky="nsew")
         self.spinMode = tk.Spinbox(self.canvas, values=('Major', 'Minor'), wrap=True)
         #self.spinMode.pack()
-        self.spinMode.grid(row=5, column=3, sticky="nsew")
+        self.spinMode.grid(row=3, column=3, sticky="nsew")
 
         self.buttonMode = tk.Button(self.canvas, text="Generate chord .wav")
         #self.buttonMode.pack()
-        self.buttonMode.grid(row=6, column=3, sticky="nsew")
+        self.buttonMode.grid(row=1, column=3, sticky="nsew")
         self.buttonMode.bind("<Button-1>", self.handle_click_mode) 
 
 #    def get_screen(self) :
@@ -103,6 +108,7 @@ class WaveGenerator :
 
     # handle of button: generates .wav of notes
     def handle_click_note(self, event):
+        
         note = self.spinNote.get()
         octave = self.spinOctave.get()
         duration = self.durationSlider.get()
@@ -114,8 +120,8 @@ class WaveGenerator :
         nbBit = 1    # taille d'un échantillon : 1 octet = 8 bits
         freqE = 44100   # fréquence d'échantillonnage
 
-        L_level = 1
-        R_level = 1
+        L_level = 1*self.volumeSlider.get()
+        R_level = 1*self.volumeSlider.get()
 
         nSamples = int(duration*freqE)
         print("Nombre d'échantillons :",nSamples)
@@ -147,6 +153,8 @@ class WaveGenerator :
         
 
     def handle_click_mode(self, event):
+
+        
         mode = self.spinMode.get()
         note = self.spinNote.get()
         octave = self.spinOctave.get() 
