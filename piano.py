@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # https://stackoverflow.com/questions/34522095/gui-button-hold-down-tkinter
 
+import winsound
+
 from playsound import playsound
 import sys
 
@@ -116,7 +118,7 @@ class Keyboard :
                 delta_w,delta_h=3/4.,2/3.
                 delta_x=3/5.
                 button=tk.Button(self.keyboard,name=key.lower(),width=3,height=6,bg="black")
-                button.bind("<Button-1>",lambda event,x=key : self.play_note(x))
+                button.bind("<Button-1>",lambda event,x=key : self.play_note(x,view=self.view))
                 button.place(width=key_w*delta_w,height=key_h*delta_h,x=key_w*delta_x+key_w*dx_black,y=0)
                 if key.startswith('D#', 0, len(key) ) :
                     dx_black=dx_black+2
@@ -141,7 +143,18 @@ class Keyboard :
             else:
                 filename= key+str(self.octave)+'_minor'+'.wav'
         print(filename)
-        playsound(filename,False)
+        if sys.platform == 'win32':
+            winsound.PlaySound(filename, winsound.SND_FILENAME) # Change "A4.wav"
+        elif sys.platform == 'linux':
+            subprocess.call(["aplay",filename]) # Change "A4.wav"
+        else: 
+            print("Your system is not compatible to play the sound")
+        
+        
+        
+        
+        
+        #playsound(filename,False)
         #self.model.notify(key)
     def get_keyboard(self) :
         return self.keyboard
