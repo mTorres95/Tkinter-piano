@@ -116,7 +116,11 @@ class Keyboard :
         print(key)
         print(self.octave)
         filename= key+str(self.octave)+'.wav'
-        playsound(filename)
+        algo=playsound(filename)
+        if(algo):
+            print("algo exists")
+        else:
+            print("algo doesn't exist")
         #self.model.notify(key)
     def get_keyboard(self) :
         return self.keyboard

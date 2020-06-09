@@ -42,7 +42,7 @@ class WaveGenerator :
         self.canvas=tk.Canvas(parent,width=600,height=300)
         #self.canvas.bind("<Configure>")  #The widget changed size. The new size is provided in the width and height attributes of the event object passed to the callback.
 
-        #self.screen=tk.Frame(parent,borderwidth=5,width=500,height=160,bg="pink")
+       
         # note and octave
         self.noteLabel = tk.Label(self.canvas, text="Note")
         #self.noteLabel.pack()
@@ -62,7 +62,7 @@ class WaveGenerator :
         self.durationLabel = tk.Label(self.canvas, text="Duration")
         self.durationLabel.grid(row=2, column=2)
         #self.durationLabel.pack()
-        self.durationSlider = tk.Scale(self.canvas, from_=0, to=4,orient="horizontal",resolution=0.1)
+        self.durationSlider = tk.Scale(self.canvas, from_=0.5, to=4,orient="horizontal",resolution=0.1)
         self.durationSlider.grid(row=3, column=2)
         #self.durationSlider.pack()
 
@@ -225,5 +225,6 @@ if __name__ == "__main__" :
     frame.pack()
 
     waveGenerator = WaveGenerator(frame)
+    waveGenerator.packing()
     #waveGenerator.get_screen().grid(column=3,row=1)
     mw.mainloop()  #run the Tkinter event loop. This method listens for events, such as button clicks or keypresses, and blocks any code that comes after it from running until the window it’s called on is closed
