@@ -11,7 +11,7 @@ root.title("Simple plot using canvas and line")
 
 width = 400
 height = 300
-center = height//2
+center = height/2
 x_increment = 1
 # width stretch
 x_factor = 0.04

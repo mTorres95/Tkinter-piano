@@ -108,7 +108,7 @@ class WaveGenerator :
 
     # handle of button: generates .wav of notes
     def handle_click_note(self, event):
-        self.buttonNote.configure(relief = 'sunken')
+        
         note = self.spinNote.get()
         octave = self.spinOctave.get()
         duration = self.durationSlider.get()
