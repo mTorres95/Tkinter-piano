@@ -97,13 +97,11 @@ class WaveGenerator :
         self.buttonMode.grid(row=1, column=3, sticky="nsew")
         self.buttonMode.bind("<Button-1>", self.handle_click_mode) 
 
-#    def get_screen(self) :
-#        print("call get screen")
-#        return self.screen
+   def change(self):
+       print("call get screen")
+       return self.screen
     
     def packing(self) :
-        #self.get_screen()
-        #self.screen.pack()
         self.canvas.pack(expand=1,fill="both",padx=6)
 
     # handle of button: generates .wav of notes
@@ -153,8 +151,6 @@ class WaveGenerator :
         
 
     def handle_click_mode(self, event):
-
-        
         mode = self.spinMode.get()
         note = self.spinNote.get()
         octave = self.spinOctave.get() 

@@ -31,6 +31,8 @@ waveGenerator.packing()
 view=View(frame)
 view.grid(4)
 view.packing()
-view.update()
+amplitude = 80
+frequency = 0.04
+view.update(amplitude, frequency)
 frame.pack()    
 mw.mainloop()
