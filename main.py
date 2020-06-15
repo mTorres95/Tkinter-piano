@@ -15,7 +15,7 @@ else :
     from tkinter import filedialog 
     from tkinter import messagebox
 from math import pi,sin
-import collections
+#import collections
 import subprocess
 from observer import *
 from piano import *
@@ -56,18 +56,21 @@ def exit_application():
     answer = messagebox.askquestion ('Exit Application','Are you sure you want to exit the application',icon = 'warning')
     if answer == 'yes':
        mw.destroy()
-    else:
-        tk.messagebox.showinfo('Return','You will now return to the application screen')
+    #else:
+    #    tk.messagebox.showinfo('Return','You will now return to the application screen')
 filemenu.add_command(label="Exit", command=exit_application)
 menubar.add_cascade(label="File", menu=filemenu)
 
 # help dropdown menu
 helpmenu = tk.Menu(menubar, tearoff=0)
 def about_application():
-    messagebox.showinfo("Authors","Perez, Jeronimo\nMia Torres Lopez")
+    messagebox.showinfo("Authors","Perez, Jeronimo\nMia Torres Lopez\nENIB - CAI\nProfessor: Alexis Nédélec")
 helpmenu.add_command(label="About", command=about_application)
 def lib_application():
-    messagebox.showinfo("Libraries","....")
+    messagebox.showinfo("Libraries","TkInter\n   - wiki.python.org/moin/TkInter\n"
+                                    "Winsound (sound in Windows)\n   - docs.python.org/2/library/winsound.html\n"
+                                    "Aplay (sound in Linux)\n   - docs.python.org/2/library/winsound.html\n"
+                                    "Format audio WAV:\n   - linux.die.net/man/1/aplay\n")
 helpmenu.add_command(label="Libraries", command=lib_application)
 menubar.add_cascade(label="Help", menu=helpmenu)
 

@@ -151,7 +151,6 @@ class Keyboard :
             print("Your system is not compatible to play the sound")
 
     def originalColor(self, button):
-        print("original")
         if("#" in button._name):
             button.configure(bg = "black")
         else:
