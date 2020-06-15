@@ -109,6 +109,7 @@ class WaveGenerator :
         self.buttonMode.grid(row=1, column=3, sticky="nsew")
         self.buttonMode.bind("<Button-1>", self.handle_click_mode) 
 
+        self.view.update(self.volumeSlider.get(),float(self.frequencies[self.spinNote.get()])*(int(self.spinOctave.get())-3))
 
         # NOTE LIST
         
