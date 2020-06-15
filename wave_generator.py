@@ -140,6 +140,7 @@ class WaveGenerator :
         self.buttonPlay_Chord = tk.Button(self.canvas, text="Play Chord")
         self.buttonPlay_Chord.grid(row=2, column=9, sticky="nsew")
         self.buttonPlay_Chord.bind("<Button-1>", self.play_Chord) 
+        #self.buttonPlay_Chord.bind("<ButtonRelease-1>", self.OriginalColor) 
 
     def play_Note(self,event):
         note = self.ListBox.get(self.ListBox.curselection())
@@ -154,10 +155,15 @@ class WaveGenerator :
     def play_Chord(self,event):
         chord = self.ListBoxChords.get(self.ListBoxChords.curselection())
         if 'Major' in chord :
+            
             print('Major')
-            note=chord[0:2]
+            if "#" in chord:
+                note=chord[0:2]
+            else:
+                note=chord[0:1] 
+            note=note.lower()
             print(note.lower())
-            #self.piano.nametowidget('note').configure(bg = "red")
+            self.piano.control.button.nametowidget('.!frame.!frame.!frame2.'+ note).configure(bg = "red")
 
             
         else :
@@ -174,8 +180,22 @@ class WaveGenerator :
             subprocess.call(["aplay",chord]) # Change "A4.wav"
         else: 
             print("Your system is not compatible to play the sound")
+        
+        self.piano.control.button.after(1000,self.OriginalColor)
 
-    
+    def OriginalColor(self):
+        #self.piano.control.button.nametowidget('.!frame.!frame.!frame2.'+note).configure(bg = "white")
+        chord=self.ListBoxChords.get(self.ListBoxChords.curselection())
+        chord=chord.lower()
+        print('entra')
+        if("#" in chord):
+            self.piano.control.button.nametowidget('.!frame.!frame.!frame2.'+chord[0:2]).configure(bg = "black")
+        else:
+            print('entra')
+            self.piano.control.button.nametowidget('.!frame.!frame.!frame2.'+chord[0]).configure(bg = "white")
+
+
+
     def packing(self) :
         self.canvas.pack(expand=1,fill="both",padx=6)
 

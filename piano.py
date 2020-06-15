@@ -39,9 +39,9 @@ class Piano :
     def create_octave(self,parent,degree=3) :
         model=Octave(degree)
         view=Screen(parent)
-        control=Keyboard(parent,model,self.octave,view)
+        self.control=Keyboard(parent,model,self.octave,view)
         model.attach(view)
-        control.get_keyboard().grid(column=degree,row=0)
+        self.control.get_keyboard().grid(column=degree,row=0)
         view.get_screen().grid(column=degree,row=1)
         self.octaves.append(model)
      
@@ -108,6 +108,7 @@ class Keyboard :
         self.octave=octave+4
         self.create_keyboard()
         self.view=view
+        #self.button=tk.Button(self.keyboard)
         
         
     def create_keyboard(self) :
@@ -118,19 +119,19 @@ class Keyboard :
             if key.startswith('#',1,len(key)) :
                 delta_w,delta_h=3/4.,2/3.
                 delta_x=3/5.
-                button=tk.Button(self.keyboard,name=key.lower(),width=3,height=6,bg="black",activebackground="red")
-                button.bind("<Button-1>",lambda event,x=key,button=button : self.play_note(x,button,view=self.view))
-                button.bind("<ButtonRelease-1>", lambda event,button=button : self.originalColor(button))
-                button.place(width=key_w*delta_w,height=key_h*delta_h,x=key_w*delta_x+key_w*dx_black,y=0)
+                self.button=tk.Button(self.keyboard,name=key.lower(),width=3,height=6,bg="black",activebackground="red")
+                self.button.bind("<Button-1>",lambda event,x=key,button=self.button : self.play_note(x,button,view=self.view))
+                self.button.bind("<ButtonRelease-1>", lambda event,button=self.button : self.originalColor(button))
+                self.button.place(width=key_w*delta_w,height=key_h*delta_h,x=key_w*delta_x+key_w*dx_black,y=0)
                 if key.startswith('D#', 0, len(key) ) :
                     dx_black=dx_black+2
                 else :
                     dx_black=dx_black+1
             else :
-                button=tk.Button(self.keyboard,name=key.lower(),bg="white",activebackground="red")
-                button.bind("<Button-1>",lambda event,x=key,button=button : self.play_note(x,button,view=self.view))
-                button.bind("<ButtonRelease-1>", lambda event,button=button : self.originalColor(button))
-                button.place(width=key_w,height=key_h,x=key_w*dx_white,y=0)
+                self.button=tk.Button(self.keyboard,name=key.lower(),bg="white",activebackground="red")
+                self.button.bind("<Button-1>",lambda event,x=key,button=self.button : self.play_note(x,button,view=self.view))
+               # self.button.bind("<ButtonRelease-1>", lambda event,button=self.button : self.originalColor(button))
+                self.button.place(width=key_w,height=key_h,x=key_w*dx_white,y=0)
                 dx_white=dx_white+1
 
     def play_note(self,key,button,view) :
@@ -150,18 +151,19 @@ class Keyboard :
         else: 
             print("Your system is not compatible to play the sound")
         print("widget name:", str(button))
-        
+        button.after(1000)
+        self.originalColor(button)
 
     def originalColor(self, button):
+        print("original")
         if("#" in button._name):
             button.configure(bg = "black")
         else:
             button.configure(bg = "white")
 
+
     def get_keyboard(self) :
         return self.keyboard
-    def get_degrees(self) :
-        return self.degrees
 
 if __name__ == "__main__" :
     mw = tk.Tk()
