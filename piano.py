@@ -152,7 +152,10 @@ class Keyboard :
         print("widget name:", str(button).split(".")[-1])
 
     def originalColor(self, button):
+<<<<<<< HEAD
         
+=======
+>>>>>>> d818617f04b61c08e48231ab473285eaafcc2010
         if("#" in button._name):
             button.configure(bg = "black")
         else:
