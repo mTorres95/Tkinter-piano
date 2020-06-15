@@ -24,8 +24,9 @@ else :
 
 class WaveGenerator :
 
-    def __init__(self,parent,view=None):
+    def __init__(self,parent,view=None,piano=None):
         self.view = view
+        self.piano = piano
         
         # dictionary for notes and its frequencies
         self.frequencies = { 'C' : 261.63,
@@ -152,6 +153,20 @@ class WaveGenerator :
     
     def play_Chord(self,event):
         chord = self.ListBoxChords.get(self.ListBoxChords.curselection())
+        if 'Major' in chord :
+            print('Major')
+            note=chord[0:2]
+            print(note.lower())
+            #self.piano.nametowidget('note').configure(bg = "red")
+
+            
+        else :
+            print('Minor')
+            note=chord[0:1]
+            print(note.lower())
+
+
+
         if sys.platform == 'win32':
             
             winsound.PlaySound(chord, winsound.SND_FILENAME) # Change "A4.wav"
@@ -162,8 +177,6 @@ class WaveGenerator :
 
     
     def packing(self) :
-        #self.get_screen()
-        #self.screen.pack()
         self.canvas.pack(expand=1,fill="both",padx=6)
 
     # handle of button: generates .wav of notes

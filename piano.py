@@ -5,6 +5,7 @@ import winsound
 
 from playsound import playsound
 import sys
+from time import sleep
 
 major=sys.version_info.major
 minor=sys.version_info.minor
@@ -117,45 +118,46 @@ class Keyboard :
             if key.startswith('#',1,len(key)) :
                 delta_w,delta_h=3/4.,2/3.
                 delta_x=3/5.
-                button=tk.Button(self.keyboard,name=key.lower(),width=3,height=6,bg="black")
-                button.bind("<Button-1>",lambda event,x=key : self.play_note(x,view=self.view))
+                button=tk.Button(self.keyboard,name=key.lower(),width=3,height=6,bg="black",activebackground="red")
+                button.bind("<Button-1>",lambda event,x=key,button=button : self.play_note(x,button,view=self.view))
+                button.bind("<ButtonRelease-1>", lambda event,button=button : self.originalColor(button))
                 button.place(width=key_w*delta_w,height=key_h*delta_h,x=key_w*delta_x+key_w*dx_black,y=0)
                 if key.startswith('D#', 0, len(key) ) :
                     dx_black=dx_black+2
                 else :
                     dx_black=dx_black+1
             else :
-                button=tk.Button(self.keyboard,name=key.lower(),bg = "white")
-                button.bind("<Button-1>",lambda event,x=key : self.play_note(x,view=self.view))
+                button=tk.Button(self.keyboard,name=key.lower(),bg="white",activebackground="red")
+                button.bind("<Button-1>",lambda event,x=key,button=button : self.play_note(x,button,view=self.view))
+                button.bind("<ButtonRelease-1>", lambda event,button=button : self.originalColor(button))
                 button.place(width=key_w,height=key_h,x=key_w*dx_white,y=0)
                 dx_white=dx_white+1
-    
-    def play_note(self,key,view) :
-        print(key)
-        
-        
-        if (view.chord.get() == 0) :
-            
+
+    def play_note(self,key,button,view) :
+        button.configure(bg = "red")
+        if (view.chord.get() == 0) : 
             filename= key+str(self.octave)+'.wav'
         else:
             if (view.spinMode.get() == 'Major') :
                 filename= key+str(self.octave)+'_major'+'.wav'
             else:
                 filename= key+str(self.octave)+'_minor'+'.wav'
-        print(filename)
+        print("Playing: ",filename)
         if sys.platform == 'win32':
             winsound.PlaySound(filename, winsound.SND_FILENAME) # Change "A4.wav"
         elif sys.platform == 'linux':
             subprocess.call(["aplay",filename]) # Change "A4.wav"
         else: 
             print("Your system is not compatible to play the sound")
+        print("widget name:", str(button).split(".")[-1])
+
+    def originalColor(self, button):
         
-        
-        
-        
-        
-        #playsound(filename,False)
-        #self.model.notify(key)
+        if("#" in button._name):
+            button.configure(bg = "black")
+        else:
+            button.configure(bg = "white")
+
     def get_keyboard(self) :
         return self.keyboard
     def get_degrees(self) :
