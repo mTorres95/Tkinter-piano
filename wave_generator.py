@@ -89,7 +89,6 @@ class WaveGenerator :
         #self.singleNoteLabel.pack()
         self.singleNoteLabel.grid(row=0, column=0, sticky="nsew")
         self.buttonNote = tk.Button(self.canvas, text="Generate note .wav")
-        #self.buttonNote.pack()
         self.buttonNote.grid(row=1, column=0, sticky="nsew")
         self.buttonNote.bind("<Button-1>", self.handle_click_note)
 
@@ -156,8 +155,9 @@ class WaveGenerator :
         if 'Major' in chord :
             print('Major')
             note=chord[0:2]
+            note=note.lower()
             print(note.lower())
-            #self.piano.nametowidget('note').configure(bg = "red")
+            self.piano.control.button.nametowidget('.!frame.!frame.!frame2.b').configure(bg = "red")
 
             
         else :
