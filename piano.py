@@ -149,13 +149,10 @@ class Keyboard :
             subprocess.call(["aplay",filename]) # Change "A4.wav"
         else: 
             print("Your system is not compatible to play the sound")
-        print("widget name:", str(button).split(".")[-1])
+        print("widget name:", str(button))
+        
 
     def originalColor(self, button):
-<<<<<<< HEAD
-        
-=======
->>>>>>> d818617f04b61c08e48231ab473285eaafcc2010
         if("#" in button._name):
             button.configure(bg = "black")
         else:
