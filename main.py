@@ -63,11 +63,13 @@ menubar.add_cascade(label="File", menu=filemenu)
 
 # help dropdown menu
 helpmenu = tk.Menu(menubar, tearoff=0)
-def help_application():
-    messagebox.showinfo("Information","Informative message")
-helpmenu.add_command(label="About", command=help_application)
+def about_application():
+    messagebox.showinfo("Authors","Perez, Jeronimo\nMia Torres Lopez")
+helpmenu.add_command(label="About", command=about_application)
+def lib_application():
+    messagebox.showinfo("Libraries","....")
+helpmenu.add_command(label="Libraries", command=lib_application)
 menubar.add_cascade(label="Help", menu=helpmenu)
-
 
 # display the menu
 mw.config(menu=menubar)
