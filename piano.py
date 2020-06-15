@@ -108,7 +108,9 @@ class Keyboard :
         self.octave=octave+4
         self.create_keyboard()
         self.view=view
+        self.button=tk.Button(self.parent)
         #self.button=tk.Button(self.keyboard)
+        self.flag=False
         
         
     def create_keyboard(self) :
@@ -130,7 +132,7 @@ class Keyboard :
             else :
                 self.button=tk.Button(self.keyboard,name=key.lower(),bg="white",activebackground="red")
                 self.button.bind("<Button-1>",lambda event,x=key,button=self.button : self.play_note(x,button,view=self.view))
-               # self.button.bind("<ButtonRelease-1>", lambda event,button=self.button : self.originalColor(button))
+                self.button.bind("<ButtonRelease-1>", lambda event,button=self.button : self.originalColor(button))
                 self.button.place(width=key_w,height=key_h,x=key_w*dx_white,y=0)
                 dx_white=dx_white+1
 
@@ -150,16 +152,20 @@ class Keyboard :
             subprocess.call(["aplay",filename]) # Change "A4.wav"
         else: 
             print("Your system is not compatible to play the sound")
-        print("widget name:", str(button))
-        button.after(1000)
-        self.originalColor(button)
+        #print("widget name:", str(button))
+        
 
-    def originalColor(self, button):
+
+    def originalColor(self,button):
+        
+        
         print("original")
-        if("#" in button._name):
+        if("#" in button._name ):
             button.configure(bg = "black")
-        else:
+        elif(not "#" in button._name ):
+            
             button.configure(bg = "white")
+
 
 
     def get_keyboard(self) :

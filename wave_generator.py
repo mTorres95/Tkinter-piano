@@ -143,7 +143,14 @@ class WaveGenerator :
         #self.buttonPlay_Chord.bind("<ButtonRelease-1>", self.OriginalColor) 
 
     def play_Note(self,event):
+        
         note = self.ListBox.get(self.ListBox.curselection())
+        noteL=note.lower()
+        if('#'in note):
+            self.piano.control.button.nametowidget('.!frame.!frame.!frame'+ str((int(note[2])-3)*2)+'.'+ noteL[0]).configure(bg = "red")
+        else:
+            self.piano.control.button.nametowidget('.!frame.!frame.!frame'+ str((int(note[1])-3)*2)+'.'+ noteL[0]).configure(bg = "red")
+        
         if sys.platform == 'win32':
             
             winsound.PlaySound(note, winsound.SND_FILENAME) # Change "A4.wav"
@@ -151,7 +158,22 @@ class WaveGenerator :
             subprocess.call(["aplay",note]) # Change "A4.wav"
         else: 
             print("Your system is not compatible to play the sound")
-    
+        self.piano.control.button.after(1000,self.OriginalColorNote)
+
+    def OriginalColorNote(self):
+        #self.piano.control.button.nametowidget('.!frame.!frame.!frame2.'+note).configure(bg = "white")
+        note = self.ListBox.get(self.ListBox.curselection())
+        noteL=note.lower()
+        
+        if('#'in noteL):
+            self.piano.control.button.nametowidget('.!frame.!frame.!frame'+ str((int(note[2])-3)*2)+'.'+ noteL[0]).configure(bg = "black")
+        else:
+            self.piano.control.button.nametowidget('.!frame.!frame.!frame'+ str((int(note[1])-3)*2)+'.'+ noteL[0]).configure(bg = "white")
+
+
+
+
+
     def play_Chord(self,event):
         chord = self.ListBoxChords.get(self.ListBoxChords.curselection())
         if 'Major' in chord :
@@ -159,11 +181,15 @@ class WaveGenerator :
             print('Major')
             if "#" in chord:
                 note=chord[0:2]
+                octave=int(chord[2])
+                
             else:
-                note=chord[0:1] 
+                note=chord[0:1]
+                octave=int(chord[1] )
             note=note.lower()
             print(note.lower())
-            self.piano.control.button.nametowidget('.!frame.!frame.!frame2.'+ note).configure(bg = "red")
+            print(str((octave-3)*2))
+            self.piano.control.button.nametowidget('.!frame.!frame.!frame'+ str((octave-3)*2)+'.'+ note).configure(bg = "red")
 
             
         else :
@@ -187,12 +213,13 @@ class WaveGenerator :
         #self.piano.control.button.nametowidget('.!frame.!frame.!frame2.'+note).configure(bg = "white")
         chord=self.ListBoxChords.get(self.ListBoxChords.curselection())
         chord=chord.lower()
-        print('entra')
+        
         if("#" in chord):
-            self.piano.control.button.nametowidget('.!frame.!frame.!frame2.'+chord[0:2]).configure(bg = "black")
+            octave=int(chord[2])
+            self.piano.control.button.nametowidget('.!frame.!frame.!frame'+str((octave-3)*2)+'.'+chord[0:2]).configure(bg = "black")
         else:
-            print('entra')
-            self.piano.control.button.nametowidget('.!frame.!frame.!frame2.'+chord[0]).configure(bg = "white")
+            octave=int(chord[1])
+            self.piano.control.button.nametowidget('.!frame.!frame.!frame'+ str((octave-3)*2)+'.'+''+chord[0]).configure(bg = "white")
 
 
 
