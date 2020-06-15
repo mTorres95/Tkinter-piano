@@ -4,6 +4,8 @@
 import sys
 import wave
 import math
+import winsound
+import subprocess
 
 major=sys.version_info.major
 minor=sys.version_info.minor
@@ -22,9 +24,9 @@ else :
 
 class WaveGenerator :
 
-
-    def __init__(self,parent,view):
+    def __init__(self,parent,view=None):
         self.view = view
+        
         # dictionary for notes and its frequencies
         self.frequencies = { 'C' : 261.63,
                         'C#': 277.18,
@@ -41,9 +43,11 @@ class WaveGenerator :
         # string for scales (repeated so it doesn't get out of ranges)
         self.chromatic = "C, C#, D, D#, E, F, F#, G, G#, A, A#, B, C, C#, D, D#, E, F, F#, G, G#, A, A#, B"
         self.chromaticArray = self.chromatic.split(", ")
-        self.create_widgets(parent)
+        self.create_widgetd(parent)
+        self.listNotes = []
+        self.listChords = []
 
-    def create_widgets(self,parent):
+    def create_widgetd(self,parent):
         self.canvas=tk.Canvas(parent,width=600,height=300)
         #self.canvas.bind("<Configure>")  #The widget changed size. The new size is provided in the width and height attributes of the event object passed to the callback.
 
@@ -106,13 +110,62 @@ class WaveGenerator :
         self.buttonMode.bind("<Button-1>", self.handle_click_mode) 
 
 
+        # NOTE LIST
+        
+        self.NoteList_Label = tk.Label(self.canvas, text="Generated Notes").grid(row=0, column=4, sticky="nsew")
+        self.ListBox= tk.Listbox(self.canvas,selectmode = 'SINGLE')
+        self.scrollbar = tk.Scrollbar(self.canvas, orient='vertical')
+        self.ListBox.config(yscrollcommand=self.scrollbar.set)
+        self.scrollbar.config(command=self.ListBox.yview)
+        self.ListBox.grid(row=1, column=4, sticky="nsew",rowspan = 3)
+        self.scrollbar.grid(row=1, column=5, sticky="nsew",rowspan = 3)
+
+        #PLAY NOTE FORM LIST
+        self.buttonPlay_Note = tk.Button(self.canvas, text="Play Note")
+        self.buttonPlay_Note.grid(row=2, column=6, sticky="nsew")
+        self.buttonPlay_Note.bind("<Button-1>", self.play_Note) 
+
+        #CHORDS LIST
+        self.ChordsList_Label = tk.Label(self.canvas, text="Generated Chords").grid(row=0, column=7, sticky="nsew")
+        self.ListBoxChords= tk.Listbox(self.canvas)
+        self.scrollbarChords = tk.Scrollbar(self.canvas, orient='vertical')
+        self.ListBoxChords.config(yscrollcommand=self.scrollbarChords.set)
+        self.scrollbarChords.config(command=self.ListBoxChords.yview)
+        self.ListBoxChords.grid(row=1, column=7, sticky="nsew",rowspan = 3)
+        self.scrollbarChords.grid(row=1, column=8, sticky="nsew",rowspan = 3)
+       
+        #PLAY CHORD FORM LIST
+        self.buttonPlay_Chord = tk.Button(self.canvas, text="Play Chord")
+        self.buttonPlay_Chord.grid(row=2, column=9, sticky="nsew")
+        self.buttonPlay_Chord.bind("<Button-1>", self.play_Chord) 
+
+    def play_Note(self,event):
+        note = self.ListBox.get(self.ListBox.curselection())
+        if sys.platform == 'win32':
+            
+            winsound.PlaySound(note, winsound.SND_FILENAME) # Change "A4.wav"
+        elif sys.platform == 'linux':
+            subprocess.call(["aplay",note]) # Change "A4.wav"
+        else: 
+            print("Your system is not compatible to play the sound")
+    
+    def play_Chord(self,event):
+        chord = self.ListBoxChords.get(self.ListBoxChords.curselection())
+        if sys.platform == 'win32':
+            
+            winsound.PlaySound(chord, winsound.SND_FILENAME) # Change "A4.wav"
+        elif sys.platform == 'linux':
+            subprocess.call(["aplay",chord]) # Change "A4.wav"
+        else: 
+            print("Your system is not compatible to play the sound")
+
     
     def packing(self) :
         self.canvas.pack(expand=1,fill="both",padx=6)
 
     # handle of button: generates .wav of notes
     def handle_click_note(self, event):
-        
+        id = 0
         note = self.spinNote.get()
         octave = self.spinOctave.get()
         duration = self.durationSlider.get()
@@ -154,9 +207,15 @@ class WaveGenerator :
 
         sound.close()
         print(fileName, 'created.')
-        
+        if not fileName in self.listNotes :
+            self.listNotes.append(fileName) 
+            self.ListBox.insert(id, fileName)
+            id+=1
+            print(self.listNotes)      
 
     def handle_click_mode(self, event):
+
+        id = 0
         mode = self.spinMode.get()
         note = self.spinNote.get()
         octave = self.spinOctave.get() 
@@ -200,14 +259,14 @@ class WaveGenerator :
         amplitudeR = 127.5*R_level
 
         print('Please wait...')
-        for freq in arrayFreq:
-            for i in range(0,nSamples):
-                # canal gauche
-                # 127.5 + 0.5 pour arrondir à l'entier le plus proche
-                valG = wave.struct.pack('B',int(128.0 + amplitudeL*math.sin(2.0*math.pi*freq*(int(octave)-3)*i/freqE)))
-                # canal droit
-                valD = wave.struct.pack('B',int(128.0 + amplitudeR*math.sin(2.0*math.pi*freq*(int(octave)-3)*i/freqE)))
-                sound.writeframes(valG + valD) # écriture frame
+        # for freq in arrayFreq:
+        #     for i in range(0,nSamples):
+        #         # canal gauche
+        #         # 127.5 + 0.5 pour arrondir à l'entier le plus proche
+        #         valG = wave.struct.pack('B',int(128.0 + amplitudeL*math.sin(2.0*math.pi*freq*(int(octave)-3)*i/freqE)))
+        #         # canal droit
+        #         valD = wave.struct.pack('B',int(128.0 + amplitudeR*math.sin(2.0*math.pi*freq*(int(octave)-3)*i/freqE)))
+        #         sound.writeframes(valG + valD) # écriture frame
 
         for i in range(0,nSamples):
             aux = int(128.0 + amplitudeR/3*math.sin(2.0*math.pi*float(arrayFreq[0])*(int(octave)-3)*i/freqE)
@@ -221,7 +280,12 @@ class WaveGenerator :
             sound.writeframes(valG + valD) # écriture frame
         sound.close()
         print(fileName, 'created.')
-
+        if not fileName in self.listChords :
+            self.listChords.append(fileName) 
+            self.ListBoxChords.insert(id, fileName)
+            id+=1
+            print(self.listChords) 
+              
 
     def update_signal(self):
         

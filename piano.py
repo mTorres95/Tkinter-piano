@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # https://stackoverflow.com/questions/34522095/gui-button-hold-down-tkinter
 
+import winsound
+
 from playsound import playsound
 import sys
 from time import sleep
@@ -133,7 +135,6 @@ class Keyboard :
 
     def play_note(self,key,button,view) :
         button.configure(bg = "red")
-        
         if (view.chord.get() == 0) : 
             filename= key+str(self.octave)+'.wav'
         else:
@@ -142,17 +143,15 @@ class Keyboard :
             else:
                 filename= key+str(self.octave)+'_minor'+'.wav'
         print("Playing: ",filename)
-        # sleep(1)
-        playsound(filename,False)
-        #button.flash()
-        #button.after(700, self.originalColor(button))
-        #sleep(1)
-        #self.originalColor(button)
-        #self.model.notify(key)
+        if sys.platform == 'win32':
+            winsound.PlaySound(filename, winsound.SND_FILENAME) # Change "A4.wav"
+        elif sys.platform == 'linux':
+            subprocess.call(["aplay",filename]) # Change "A4.wav"
+        else: 
+            print("Your system is not compatible to play the sound")
 
     def originalColor(self, button):
-        print("wait............")
-        print("Original color")
+        print("original")
         if("#" in button._name):
             button.configure(bg = "black")
         else:
