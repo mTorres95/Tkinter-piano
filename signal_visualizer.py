@@ -37,15 +37,19 @@ class View :
         # height stretch
         y_amplitude = self.a
 
-        for x in range(self.width) :
+        # for i in range(self.h) :
+        #     print(i)
+        for x in range(self.width):
             #self.signal.append([t*Tech,self.vibration(t*Tech)])
-            self.signal.append([x*x_increment , int(y_amplitude * math.sin(x * x_factor)) + self.center])
+            self.signal.append([x*x_increment , int(y_amplitude * math.sin(x * x_factor + self.p)) + int(y_amplitude * math.sin(x * x_factor * self.h + self.p)) + self.center])
         return self.signal
-    def update(self,amplitude,frequency):
+    def update(self,amplitude,frequency,phase,harmonic):
         print("View : update()")
         self.a=amplitude*127.5
         self.f=frequency/5000
-        print("Amp=",self.a,"Freq=",self.f)
+        self.p=phase*math.pi/180
+        self.h=harmonic+1
+        print("Amp=",self.a,"\nFreq=",self.f,"\Phase=",self.p,"\Harmonic=",self.h)
         self.canvas.delete("all")
         self.grid()
         #self.canvas.create_line(0, self.center, self.width, self.center, fill='black')
@@ -72,17 +76,21 @@ class View :
 
 if __name__ == "__main__" :
     mw = tk.Tk()
+
     width = 830
     height = 630
-    geometry = str(width) + "x" + str(height)
-    mw.geometry(geometry)
 
     mw.title("Visualisation de signal sonore")
-    frame=tk.Frame(mw,borderwidth=5,width=width,height=height,bg="green")
+    frame=tk.Frame(mw,borderwidth=5,width=width,height=height)
     frame.grid(row=0,column=0)
 
-    frame2=tk.Frame(mw,borderwidth=5,width=width,height=height,bg="green")
+    frame2=tk.Frame(mw,borderwidth=5,width=width,height=height)
     frame2.grid(row=1,column=0)
+
+    height = frame.winfo_screenheight()
+    geometry = str(width) + "x" + str(height)
+    print(geometry)
+    mw.geometry(geometry)
 
     # amplitude
     amplitudeLabel = tk.Label(frame2, text="Amplitude")
@@ -96,6 +104,18 @@ if __name__ == "__main__" :
     frequencySlider = tk.Scale(frame2, from_=4, to=100,orient="horizontal",resolution=0.1)
     frequencySlider.grid(row=1, column=1)
 
+    # harmonic
+    harmonicLabel = tk.Label(frame2, text="Harmonic")
+    harmonicLabel.grid(row=2, column=0, sticky="nsew")
+    harmonicSlider = tk.Scale(frame2, from_=0, to=10,orient="horizontal",resolution=1)
+    harmonicSlider.grid(row=2, column=1)
+
+    # phase
+    phaseLabel = tk.Label(frame2, text="Phase change")
+    phaseLabel.grid(row=3, column=0, sticky="nsew")
+    phaseSlider = tk.Scale(frame2, from_=0, to=180,orient="horizontal",resolution=0.1)
+    phaseSlider.grid(row=3, column=1)
+
     # draw the signal
     view=View(frame)
     view.grid(6)
@@ -103,11 +123,16 @@ if __name__ == "__main__" :
 
     def update(self):
         amplitude = amplitudeSlider.get()
+        amplitude = amplitude/100
         frequency = frequencySlider.get()
-        frequency = frequency/100
-        view.update(amplitude,frequency)
+        frequency = frequency*10
+        phase = phaseSlider.get()
+        harmonic = harmonicSlider.get()
+        view.update(amplitude,frequency, phase, harmonic)
 
     amplitudeSlider.bind("<ButtonRelease-1>", update)
     frequencySlider.bind("<ButtonRelease-1>", update) 
+    phaseSlider.bind("<ButtonRelease-1>", update)
+    harmonicSlider.bind("<ButtonRelease-1>", update)
 
     mw.mainloop()
