@@ -27,6 +27,7 @@ class WaveGenerator :
     def __init__(self,parent,view=None,piano=None):
         self.view = view
         self.piano = piano
+        self.parent=parent
         
         # dictionary for notes and its frequencies
         self.frequencies = { 'C' : 261.63,
@@ -109,8 +110,8 @@ class WaveGenerator :
         #self.buttonMode.pack()
         self.buttonMode.grid(row=1, column=3, sticky="nsew")
         self.buttonMode.bind("<Button-1>", self.handle_click_mode) 
-
-        self.view.update(self.volumeSlider.get(),float(self.frequencies[self.spinNote.get()])*(int(self.spinOctave.get())-3))
+        if self.view is not None :
+            self.view.update(self.volumeSlider.get(),float(self.frequencies[self.spinNote.get()])*(int(self.spinOctave.get())-3))
 
         # NOTE LIST
         
@@ -129,7 +130,7 @@ class WaveGenerator :
 
         #CHORDS LIST
         self.ChordsList_Label = tk.Label(self.canvas, text="Generated Chords").grid(row=0, column=7, sticky="nsew")
-        self.ListBoxChords= tk.Listbox(self.canvas)
+        self.ListBoxChords= tk.Listbox(self.canvas,selectmode = 'SINGLE')
         self.scrollbarChords = tk.Scrollbar(self.canvas, orient='vertical')
         self.ListBoxChords.config(yscrollcommand=self.scrollbarChords.set)
         self.scrollbarChords.config(command=self.ListBoxChords.yview)
@@ -139,18 +140,22 @@ class WaveGenerator :
         #PLAY CHORD FORM LIST
         self.buttonPlay_Chord = tk.Button(self.canvas, text="Play Chord")
         self.buttonPlay_Chord.grid(row=2, column=9, sticky="nsew")
-        self.buttonPlay_Chord.bind("<Button-1>", self.play_Chord) 
+        self.buttonPlay_Chord.bind("<Button-1>", self.play_Chord)   
         #self.buttonPlay_Chord.bind("<ButtonRelease-1>", self.OriginalColor) 
 
     def play_Note(self,event):
-        
+        self.busy()
         note = self.ListBox.get(self.ListBox.curselection())
         noteL=note.lower()
-        if('#'in note):
-            self.piano.control.button.nametowidget('.!frame.!frame.!frame'+ str((int(note[2])-3)*2)+'.'+ noteL[0]).configure(bg = "red")
-        else:
-            self.piano.control.button.nametowidget('.!frame.!frame.!frame'+ str((int(note[1])-3)*2)+'.'+ noteL[0]).configure(bg = "red")
-        
+        if self.piano is not None :
+            
+            if('#'in note):
+                self.piano.control.button.nametowidget('.!frame.!frame.!frame'+ str((int(note[2])-3)*2)+'.'+ noteL[0]+'#').configure(bg = "red")
+                
+            else:
+                self.piano.control.button.nametowidget('.!frame.!frame.!frame'+ str((int(note[1])-3)*2)+'.'+ noteL[0]).configure(bg = "red")
+                
+            
         if sys.platform == 'win32':
             
             winsound.PlaySound(note, winsound.SND_FILENAME) # Change "A4.wav"
@@ -158,7 +163,9 @@ class WaveGenerator :
             subprocess.call(["aplay",note]) # Change "A4.wav"
         else: 
             print("Your system is not compatible to play the sound")
-        self.piano.control.button.after(1000,self.OriginalColorNote)
+        if self.piano is not None :
+            self.piano.control.button.after(1000,self.OriginalColorNote)
+        
 
     def OriginalColorNote(self):
         #self.piano.control.button.nametowidget('.!frame.!frame.!frame2.'+note).configure(bg = "white")
@@ -166,19 +173,19 @@ class WaveGenerator :
         noteL=note.lower()
         
         if('#'in noteL):
-            self.piano.control.button.nametowidget('.!frame.!frame.!frame'+ str((int(note[2])-3)*2)+'.'+ noteL[0]).configure(bg = "black")
+            self.piano.control.button.nametowidget('.!frame.!frame.!frame'+ str((int(note[2])-3)*2)+'.'+ noteL[0]+'#').configure(bg = "black")
         else:
             self.piano.control.button.nametowidget('.!frame.!frame.!frame'+ str((int(note[1])-3)*2)+'.'+ noteL[0]).configure(bg = "white")
-
+        self.notbusy()
 
 
 
 
     def play_Chord(self,event):
+        self.busy()
         chord = self.ListBoxChords.get(self.ListBoxChords.curselection())
-        if 'Major' in chord :
+        if self.piano is not None :
             
-            print('Major')
             if "#" in chord:
                 note=chord[0:2]
                 octave=int(chord[2])
@@ -190,15 +197,7 @@ class WaveGenerator :
             print(note.lower())
             print(str((octave-3)*2))
             self.piano.control.button.nametowidget('.!frame.!frame.!frame'+ str((octave-3)*2)+'.'+ note).configure(bg = "red")
-
-            
-        else :
-            print('Minor')
-            note=chord[0:1]
-            print(note.lower())
-
-
-
+       
         if sys.platform == 'win32':
             
             winsound.PlaySound(chord, winsound.SND_FILENAME) # Change "A4.wav"
@@ -206,8 +205,10 @@ class WaveGenerator :
             subprocess.call(["aplay",chord]) # Change "A4.wav"
         else: 
             print("Your system is not compatible to play the sound")
+        if self.piano is not None :
+            
+            self.piano.control.button.after(1000,self.OriginalColor)
         
-        self.piano.control.button.after(1000,self.OriginalColor)
 
     def OriginalColor(self):
         #self.piano.control.button.nametowidget('.!frame.!frame.!frame2.'+note).configure(bg = "white")
@@ -216,11 +217,11 @@ class WaveGenerator :
         
         if("#" in chord):
             octave=int(chord[2])
-            self.piano.control.button.nametowidget('.!frame.!frame.!frame'+str((octave-3)*2)+'.'+chord[0:2]).configure(bg = "black")
+            self.piano.control.button.nametowidget('.!frame.!frame.!frame'+str((octave-3)*2)+'.'+chord[0:2]+'#').configure(bg = "black")
         else:
             octave=int(chord[1])
             self.piano.control.button.nametowidget('.!frame.!frame.!frame'+ str((octave-3)*2)+'.'+''+chord[0]).configure(bg = "white")
-
+        self.notbusy()
 
 
     def packing(self) :
@@ -228,6 +229,8 @@ class WaveGenerator :
 
     # handle of button: generates .wav of notes
     def handle_click_note(self, event):
+        
+        self.busy()
         id = 0
         note = self.spinNote.get()
         octave = self.spinOctave.get()
@@ -273,11 +276,16 @@ class WaveGenerator :
         if not fileName in self.listNotes :
             self.listNotes.append(fileName) 
             self.ListBox.insert(id, fileName)
+            self.ListBox.selection_clear(0,tk.END)
+            self.ListBox.selection_set(id)
+            
             id+=1
-            print(self.listNotes)      
+            print(self.listNotes)   
+        self.notbusy()   
+    
 
     def handle_click_mode(self, event):
-
+        self.busy()
         id = 0
         mode = self.spinMode.get()
         note = self.spinNote.get()
@@ -346,19 +354,31 @@ class WaveGenerator :
         if not fileName in self.listChords :
             self.listChords.append(fileName) 
             self.ListBoxChords.insert(id, fileName)
+            self.ListBoxChords.selection_clear(0,tk.END)
+            self.ListBoxChords.selection_set(id)
+            
             id+=1
             print(self.listChords) 
+        self.notbusy()
               
-
     def update_signal(self):
-        
-        self.view.update(self.volumeSlider.get(),float(self.frequencies[self.spinNote.get()])*(int(self.spinOctave.get())-3))
-        print(self.spinNote.get())
+        if self.view :
+            self.view.update(self.volumeSlider.get(),float(self.frequencies[self.spinNote.get()])*(int(self.spinOctave.get())-3))
+            print(self.spinNote.get())
 
     def update_signal_slider(self,event):
+        if self.view :
+            self.view.update(self.volumeSlider.get(),float(self.frequencies[self.spinNote.get()])*(int(self.spinOctave.get())-3))
+            print(self.spinNote.get())
+   
+    def busy(self):
+        self.canvas.config(cursor="wait")
+        self.canvas.update()
+
+    def notbusy(self):
+        self.canvas.config(cursor="")
+        self.canvas.update()
         
-        self.view.update(self.volumeSlider.get(),float(self.frequencies[self.spinNote.get()])*(int(self.spinOctave.get())-3))
-        print(self.spinNote.get())
 
 if __name__ == "__main__" :
     mw = tk.Tk()    #create window object
