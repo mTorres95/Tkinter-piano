@@ -43,7 +43,7 @@ class View :
             #self.signal.append([t*Tech,self.vibration(t*Tech)])
             self.signal.append([x*x_increment , int(y_amplitude * math.sin(x * x_factor + self.p)) + int(y_amplitude * math.sin(x * x_factor * self.h + self.p)) + self.center])
         return self.signal
-    def update(self,amplitude,frequency,phase,harmonic):
+    def update(self,amplitude,frequency,phase=0,harmonic=0):
         print("View : update()")
         self.a=amplitude*127.5
         self.f=frequency/5000

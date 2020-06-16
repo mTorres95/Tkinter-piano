@@ -217,6 +217,7 @@ class WaveGenerator :
         
         if("#" in chord):
             octave=int(chord[2])
+            print(chord)
             self.piano.control.button.nametowidget('.!frame.!frame.!frame'+str((octave-3)*2)+'.'+chord[0:2]+'#').configure(bg = "black")
         else:
             octave=int(chord[1])
