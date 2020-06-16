@@ -61,8 +61,6 @@ class WaveGenerator :
         self.spinNote = tk.Spinbox(self.canvas, values=('C','C#','D','D#','E','F','F#','G','G#','A','A#','B'), wrap=True, command = self.update_signal)
         #self.spinNote.pack()
         self.spinNote.grid(row=0, column=2, sticky="nsew")
-        
-
 
         self.octaveLabel = tk.Label(self.canvas, text="Octave")
         #self.octaveLabel.pack()

@@ -26,6 +26,7 @@ class View :
         self.width,self.height=width,height
         self.units=1
         self.canvas.bind("<Configure>",self.resize)
+
     def generate_signal(self,period=2,samples=100.0):
         del self.signal[0:]
         self.center = self.height/2
@@ -44,19 +45,19 @@ class View :
             self.signal.append([x*x_increment , int(y_amplitude * math.sin(x * x_factor + self.p)) + int(y_amplitude * math.sin(x * x_factor * self.h + self.p)) + self.center])
         return self.signal
     def update(self,amplitude,frequency,phase=0,harmonic=0):
-        print("View : update()")
+        #print("View : update()")
         self.a=amplitude*127.5
         self.f=frequency/5000
         self.p=phase*math.pi/180
         self.h=harmonic+1
-        print("Amp=",self.a,"\nFreq=",self.f,"\Phase=",self.p,"\Harmonic=",self.h)
+        #print("Amp=",self.a,"\nFreq=",self.f,"\Phase=",self.p,"\Harmonic=",self.h)
         self.canvas.delete("all")
         self.grid()
         #self.canvas.create_line(0, self.center, self.width, self.center, fill='black')
         self.generate_signal()
         if self.signal :
             self.canvas.create_line(self.signal, fill='red')
-    def grid(self,steps=6):
+    def grid(self,steps=8):
         self.units=steps
         tile_x=self.width/steps
         for t in range(1,steps+1):
@@ -89,7 +90,6 @@ if __name__ == "__main__" :
 
     height = frame.winfo_screenheight()
     geometry = str(width) + "x" + str(height)
-    print(geometry)
     mw.geometry(geometry)
 
     # amplitude
@@ -118,7 +118,6 @@ if __name__ == "__main__" :
 
     # draw the signal
     view=View(frame)
-    view.grid(6)
     view.packing()
 
     def update(self):
